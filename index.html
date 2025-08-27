@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matheus & Suelem | Nossa História nas Estrelas</title>
+    
+    <!-- Meta Tags para SEO e Compartilhamento Social -->
+    <meta name="description" content="Uma jornada cósmica pela história de amor de Matheus e Suelem.">
+    <meta name="author" content="Matheus">
+    <meta property="og:title" content="Matheus & Suelem | Nossa História nas Estrelas">
+    <meta property="og:description" content="Uma jornada interativa e emocionante pelo nosso universo particular.">
+    <meta property="og:image" content="https://placehold.co/1200x630/0f051e/ffffff?text=M+%26+S">
+    <meta property="og:url" content="#"> <!-- Substitua pela URL final -->
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon e Ícones -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
+
+    <!-- Pré-carregamento de Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
+    <!-- GSAP (para animações avançadas) via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+
+    <style>
+        /*------------------------------------*\
+          #RESET & VARIÁVEIS GLOBAIS
+        \*------------------------------------*/
+        :root {
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+
+            --color-background: #0D041A;
+            --color-text: #EAE6F0;
+            --color-heading: #FFFFFF;
+            --color-primary: #C972FF;
+            --color-secondary: #FF72E5;
+            --color-accent: #72F8FF;
+
+            --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            --gradient-cosmic: linear-gradient(180deg, rgba(13, 4, 26, 0) 0%, rgba(13, 4, 26, 0.8) 70%, var(--color-background) 100%);
+
+            --shadow-glow: 0 0 15px rgba(201, 114, 255, 0.3), 0 0 30px rgba(201, 114, 255, 0.2);
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-sans);
+            font-weight: 300;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /*------------------------------------*\
+          #ELEMENTOS DE FUNDO E GLOBAIS
+        \*------------------------------------*/
+        #cosmic-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .main-container {
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        section {
+            padding: 10rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            section { padding: 6rem 1.5rem; }
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-serif);
+            color: var(--color-heading);
+            line-height: 1.2;
+            font-weight: 700;
+            text-wrap: balance;
+        }
+        
+        h1 { font-size: clamp(3rem, 8vw, 6rem); }
+        h2 { font-size: clamp(2.5rem, 6vw, 3.5rem); text-align: center; margin-bottom: 4rem; }
+        h3 { font-size: clamp(1.5rem, 4vw, 2rem); }
+
+        /*------------------------------------*\
+          #BARRA DE NAVEGAÇÃO E PROGRESSO
+        \*------------------------------------*/
+        .main-nav {
+            position: fixed;
+            top: 0; /* gruda no topo */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%; /* ocupa toda a largura */
+            max-width: 1200px; /* evita ficar esticado demais em telas grandes */
+            background: rgba(25, 12, 48, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 114, 255, 0.2);
+            border-radius: 0 0 20px 20px; /* arredonda só embaixo */
+            padding: 0.8rem 1.5rem;
+            z-index: 200; /* maior que a progress-bar */
+        }
+
+        .main-nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center; /* centraliza links */
+            gap: 2rem;
+            flex-wrap: wrap; /* permite quebrar linha em telas pequenas */
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-nav a {
+            color: var(--color-text);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .main-nav a:hover, 
+        .main-nav a.active {
+            color: var(--color-heading);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--color-primary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .main-nav a.active::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Mobile: menu sempre visível, só ajusta padding e gap */
+        @media (max-width: 768px) {
+            .main-nav {
+                padding: 0.6rem 1rem;
+                border-radius: 0; /* ocupa toda a largura no topo */
+            }
+        
+            .main-nav ul {
+                gap: 1rem;
+            }
+        
+            .main-nav a {
+                font-size: 0.6rem;
+            }
+        }
+
+        /*------------------------------------*\
+          #SEÇÃO HERO
+        \*------------------------------------*/
+        .hero {
+           min-height: 100vh;
+           display: flex;
+           flex-direction: column;
+           justify-content: center;
+           align-items: center;
+           text-align: center;
+           padding-bottom: 10vh;
+           position: relative;
+           overflow: hidden;
+        }
+        
+        .hero h1 {
+            background: linear-gradient(135deg, #fff, #e0c3fc, #8ec5fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            font-size: clamp(3rem, 8vw, 6rem);
+            animation: text-fade-in 1.5s ease forwards, h1-pulse 3s ease-in-out infinite;
+            opacity: 0;
+            text-shadow:
+                0 0 8px rgba(201, 114, 255, 0.4),
+                0 0 15px rgba(201, 114, 255, 0.3),
+                0 0 25px rgba(201, 114, 255, 0.2);
+        }
+        
+        @keyframes h1-pulse {
+            0%, 100% {
+                text-shadow:
+                    0 0 8px rgba(201, 114, 255, 0.4),
+                    0 0 15px rgba(201, 114, 255, 0.3),
+                    0 0 25px rgba(201, 114, 255, 0.2);
+                transform: scale(1);
+            }
+            50% {
+                text-shadow:
+                    0 0 12px rgba(201, 114, 255, 0.6),
+                    0 0 25px rgba(201, 114, 255, 0.5),
+                    0 0 40px rgba(201, 114, 255, 0.3);
+                transform: scale(1.02);
+            }
+        }
+        
+        .hero p {
+           font-size: 1.25rem;
+           max-width: 600px;
+           margin-bottom: 2rem;
+           color: var(--color-text);
+           opacity: 0;
+           transform: translateY(10px);
+           animation: text-fade-in 1.5s ease 0.5s forwards;
+        }
+        
+        .cta-button {
+           background: var(--gradient-primary);
+           color: var(--color-heading);
+           border: none;
+           padding: 1rem 2.5rem;
+           font-size: 1rem;
+           font-weight: bold;
+           border-radius: 50px;
+           cursor: pointer;
+           transition: transform 0.3s ease, box-shadow 0.3s ease;
+           box-shadow: 0 0 15px rgba(201, 114, 255, 0.3), 0 0 30px rgba(201, 114, 255, 0.2);
+           animation: pulse-glow 2s infinite;
+        }
+        
+        .cta-button:hover {
+           transform: scale(1.1) translateY(-3px);
+           box-shadow: 0 0 30px rgba(201, 114, 255, 0.6), 0 0 60px rgba(201, 114, 255, 0.4);
+        }
+        
+        /* Pulsar como coração */
+        @keyframes pulse-glow {
+           0% {
+               transform: scale(1);
+               box-shadow: 0 0 15px rgba(201, 114, 255, 0.3), 0 0 30px rgba(201, 114, 255, 0.2);
+           }
+           50% {
+               transform: scale(1.08);
+               box-shadow: 0 0 25px rgba(201, 114, 255, 0.5), 0 0 50px rgba(201, 114, 255, 0.3);
+           }
+           100% {
+               transform: scale(1);
+               box-shadow: 0 0 15px rgba(201, 114, 255, 0.3), 0 0 30px rgba(201, 114, 255, 0.2);
+           }
+        }
+        
+        /* Fade in suave do texto */
+        @keyframes text-fade-in {
+           to {
+               opacity: 1;
+               transform: translateY(0);
+           }
+        }
+        
+        /* Scroll indicator já existente */
+        .scroll-indicator {
+           position: absolute;
+           bottom: 30px;
+           left: 50%;
+           transform: translateX(-50%);
+           color: var(--color-text);
+           font-size: 0.8rem;
+           animation: bounce 2s infinite;
+        }
+        
+        /* Bounce do scroll indicator */
+        @keyframes bounce {
+           0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+           40% { transform: translate(-50%, -15px); }
+           60% { transform: translate(-50%, -7px); }
+        }
+
+        /*------------------------------------*\
+          #SEÇÃO NOSSA MÚSICA
+        \*------------------------------------*/
+        #music .music-player-container {
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           gap: 2rem;
+           background: rgba(25, 12, 48, 0.5);
+           backdrop-filter: blur(10px);
+           border: 1px solid rgba(201, 114, 255, 0.2);
+           border-radius: 20px;
+           padding: 3rem;
+           box-shadow: 0 0 15px rgba(201, 114, 255, 0.3), 0 0 30px rgba(201, 114, 255, 0.2);
+           animation: music-pulse 2.5s ease-in-out infinite;
+           transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        @keyframes music-pulse {
+           0%, 100% {
+               transform: scale(1);
+               box-shadow: 0 0 15px rgba(201, 114, 255, 0.3), 0 0 30px rgba(201, 114, 255, 0.2);
+           }
+           50% {
+               transform: scale(1.02);
+               box-shadow: 0 0 25px rgba(201, 114, 255, 0.5), 0 0 50px rgba(201, 114, 255, 0.3);
+           }
+        }
+
+        .album-art {
+           width: 180px;
+           height: 180px;
+           border-radius: 20px;
+           box-shadow: 0 15px 25px rgba(0,0,0,0.4);
+           animation: album-fade-in 1.5s ease forwards;
+           opacity: 0;
+        }
+
+        .track-info {
+           text-align: center;
+           animation: track-fade-in 1.5s ease 0.3s forwards;
+           opacity: 0;
+        }
+
+        .track-info h3 { 
+           margin-bottom: 0.5rem; 
+           font-family: var(--font-serif);
+           font-size: clamp(1.5rem, 3vw, 2rem);
+        }
+
+        .track-info p { 
+           color: var(--color-text); 
+           font-size: 1rem;
+        }
+
+        .waveform {
+           width: 100%;
+           max-width: 500px;
+           height: 100px;
+           margin-top: 1rem;
+        }
+
+        .audio-controls {
+           display: flex;
+           align-items: center;
+           gap: 1.5rem;
+           animation: controls-fade-in 1.5s ease 0.5s forwards;
+           opacity: 0;
+        }
+
+        .audio-controls button {
+           background: none;
+           border: 2px solid var(--color-primary);
+           color: var(--color-primary);
+           width: 50px;
+           height: 50px;
+           border-radius: 50%;
+           cursor: pointer;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           transition: background-color 0.3s, color 0.3s, transform 0.3s;
+        }
+
+        .audio-controls button:hover {
+           background: var(--color-primary);
+           color: var(--color-background);
+           transform: scale(1.1);
+        }
+
+        .audio-controls button svg {
+           width: 20px;
+           height: 20px;
+           fill: currentColor;
+        }
+
+        .music-description {
+           max-width: 650px;
+           text-align: center;
+           margin-top: 2rem;
+           font-size: 1.1rem;
+           animation: description-fade-in 1.5s ease 0.7s forwards;
+           opacity: 0;
+        }
+        @keyframes album-fade-in {
+           to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes track-fade-in {
+           to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes controls-fade-in {
+           to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes description-fade-in {
+           to { opacity: 1; transform: translateY(0); }
+        }
+
+        /*------------------------------------*\
+          #SEÇÃO LINHA DO TEMPO
+        \*------------------------------------*/
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            background: var(--gradient-primary);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1.5px;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        
+        .timeline-item.left { left: 0; }
+        .timeline-item.right { left: 50%; }
+
+        .timeline-item::after {
+            content: ' ';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: var(--color-background);
+            border: 4px solid var(--color-primary);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .right .timeline-item::after { left: -10px; }
+
+        .timeline-content {
+            padding: 20px 30px;
+            background: rgba(25, 12, 48, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 114, 255, 0.2);
+            position: relative;
+            border-radius: 10px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .timeline-content .date {
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p { font-size: 0.95rem; }
+
+        @media (max-width: 768px) {
+            .timeline::after { left: 20px; }
+            .timeline-item { width: 100%; padding-left: 60px; padding-right: 15px; }
+            .timeline-item.left, .timeline-item.right { left: 0; }
+            .timeline-item::after { left: 10px; }
+        }
+
+        /*------------------------------------*\
+          #SEÇÃO GALERIA
+        \*------------------------------------*/
+        .gallery-filters {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-filters button {
+            background: none;
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            padding: 0.5rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-filters button.active, .gallery-filters button:hover {
+            background: var(--color-primary);
+            color: var(--color-background);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: var(--shadow-card);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease, filter 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+            filter: brightness(0.7);
+        }
+
+        .gallery-item .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .lightbox.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 10px;
+        }
+        
+        .lightbox-caption {
+            position: absolute;
+            bottom: 5%;
+            color: white;
+            text-align: center;
+            width: 100%;
+        }
+
+        .lightbox-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .lightbox-close { top: 30px; right: 30px; font-size: 1.5rem; }
+        .lightbox-prev { left: 30px; }
+        .lightbox-next { right: 30px; }
+
+        /*------------------------------------*\
+          #SEÇÃO CARTA ABERTA
+        \*------------------------------------*/
+        .letter-content {
+            background: rgba(13, 4, 26, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(201, 114, 255, 0.2);
+            padding: 4rem;
+            border-radius: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 0 15px rgba(201, 114, 255, 0.3), 
+                        0 0 30px rgba(201, 114, 255, 0.2);
+            animation: letter-pulse 2.5s ease-in-out infinite;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        
+        .letter-content h3 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .letter-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        /* Reutilizando a mesma lógica do #music */
+        @keyframes letter-pulse {
+           0%, 100% {
+               transform: scale(1);
+               box-shadow: 0 0 15px rgba(201, 114, 255, 0.3), 
+                           0 0 30px rgba(201, 114, 255, 0.2);
+           }
+           50% {
+               transform: scale(1.02);
+               box-shadow: 0 0 25px rgba(201, 114, 255, 0.5), 
+                           0 0 50px rgba(201, 114, 255, 0.3);
+           }
+        }
+        
+        @media (max-width: 768px) {
+            .letter-content { padding: 2rem; }
+        }
+
+        /*------------------------------------*\
+          #SEÇÃO FINAL & EASTER EGG
+        \*------------------------------------*/
+        .final-call {
+            text-align: center;
+        }
+
+        .final-call p {
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto 3rem auto;
+        }
+
+        /* Overlay deve cobrir a tela toda */
+        #konami-overlay {
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            width: 100vw;   /* largura total */
+            height: 100vh;  /* altura total da viewport */
+            z-index: 99999;
+            pointer-events: none;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .heart-particle {
+            position: absolute;
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            font-weight: bold;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+            white-space: nowrap;
+            opacity: 0;
+            animation: rise 6s linear forwards, sway 2s ease-in-out infinite alternate;
+        }
+
+        /* Faz subir desde a parte de baixo até além do topo */
+        @keyframes rise {
+            0%   { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
+            10%  { opacity: 1; }
+            100% { transform: translateY(-120vh) scale(1.8) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes sway {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(20px); }
+        }
+
+        /*------------------------------------*\
+          #UTILIDADES E ANIMAÇÕES
+        \*------------------------------------*/
+        .hidden {
+            opacity: 0;
+            filter: blur(5px);
+            transform: translateY(20px);
+            transition: all 1s;
+        }
+        .show {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0);
+        }
+
+        @media(prefers-reduced-motion) {
+            .hidden { transition: none; }
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="cosmic-background"></canvas>
+    <div class="progress-bar"></div>
+
+    <nav class="main-nav">
+        <ul>
+            <li><a href="#inicio" class="nav-link active">Início</a></li>
+            <li><a href="#music" class="nav-link">Nossa Música</a></li>
+            <li><a href="#timeline" class="nav-link">Linha do Tempo</a></li>
+            <li><a href="#gallery" class="nav-link">Galeria</a></li>
+            <li><a href="#letter" class="nav-link">Carta</a></li>
+        </ul>
+    </nav>
+    
+    <main class="main-container">
+
+        <!-- ======================= SEÇÃO HERO ======================= -->
+        <section id="inicio" class="hero">
+            <h1 class="reveal">Matheus 🤍 Suelem</h1>
+            <p class="reveal" data-delay="0.2">Uma história de amor escrita nas estrelas, um universo que começamos a construir juntos.</p>
+            <button id="start-journey-btn" class="cta-button reveal" data-delay="0.4">▶ Começar nossa história</button>
+            <div class="scroll-indicator">
+                <span>↓</span>
+            </div>
+        </section>
+
+        <!-- ======================= SEÇÃO NOSSA MÚSICA ======================= -->
+        <section id="music">
+            <h2 class="reveal">Nossa Música</h2>
+            <div class="music-player-container reveal">
+                <img src="https://placehold.co/300x300/c972ff/0D041A?text=Die+With+A+Smile" alt="Capa do Álbum" class="album-art">
+                <div class="track-info">
+                    <h3 id="track-title">Carregando...</h3>
+                    <p id="track-artist">Carregando...</p>
+                </div>
+                <canvas id="waveform"></canvas>
+                <div class="audio-controls">
+                    <button id="play-pause-btn" aria-label="Tocar/Pausar">
+                        <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                        <svg id="pause-icon" viewBox="0 0 24 24" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+                    </button>
+                </div>
+                <p class="music-description" id="music-text">Carregando...</p>
+            </div>
+            <audio id="audio-player" src=""></audio> <!-- O SRC será definido via JS -->
+        </section>
+
+        <!-- ======================= SEÇÃO LINHA DO TEMPO ======================= -->
+        <section id="timeline">
+            <!-- Contador -->
+            <div id="contador-tempo" class="contador"></div>
+        
+            <h2 class="reveal">Nossa Linha do Tempo</h2>
+            <div class="timeline" id="timeline-container">
+                <!-- Itens da timeline serão injetados aqui pelo JavaScript -->
+            </div>
+        </section>
+
+        <script>
+            function atualizarContador() {
+        // Data inicial: 3 de agosto de 2024, 12:33
+        const inicio = new Date("2024-08-03T12:33:00");
+        const agora = new Date();
+        let diff = Math.floor((agora - inicio) / 1000); // diferença em segundos
+
+        // Total de dias corridos
+        const diasTotais = Math.floor(diff / (24 * 60 * 60));
+        diff %= 24 * 60 * 60;
+
+        const horas = Math.floor(diff / 3600);
+        diff %= 3600;
+
+        const minutos = Math.floor(diff / 60);
+        const segundos = diff % 60;
+
+        // Exibe de forma mais humana
+        document.getElementById("contador-tempo").innerText =
+            `Estamos juntos há ${diasTotais} dias, ${horas} horas, ${minutos} minutos e ${segundos} segundos.`;
+    }
+        
+            // Atualiza a cada segundo
+            setInterval(atualizarContador, 1000);
+            atualizarContador();
+        </script>
+
+        <style>
+            .contador {
+                text-align: center;
+                font-size: 1.3rem;
+                font-family: 'Georgia', serif;
+                font-style: italic;
+                color: #f8e1ff;
+                margin-bottom: 1.5rem;
+                text-shadow: 0 0 8px rgba(201, 114, 255, 0.6);
+            }
+
+            @keyframes glowPulse {
+                0%, 100% {
+                    text-shadow: 0 0 10px rgba(201, 114, 255, 0.7),
+                                 0 0 20px rgba(201, 114, 255, 0.5);
+                }
+                50% {
+                    text-shadow: 0 0 20px rgba(201, 114, 255, 1),
+                                 0 0 40px rgba(201, 114, 255, 0.8);
+                }
+            }
+
+        </style>
+
+        <!-- ======================= SEÇÃO GALERIA ======================= -->
+        <section id="gallery">
+            <h2 class="reveal">Galeria de Momentos</h2>
+            <div class="gallery-filters reveal" id="gallery-filters-container">
+                <!-- Filtros serão injetados aqui -->
+            </div>
+            <div class="gallery-grid reveal" id="gallery-grid-container">
+                <!-- Imagens da galeria serão injetadas aqui -->
+            </div>
+        </section>
+
+        <!-- ======================= SEÇÃO CARTA ABERTA ======================= -->
+        <section id="letter">
+            <h2 class="reveal">Uma Carta Para Você</h2>
+            <div class="letter-content reveal" id="letter-container">
+                <!-- Conteúdo da carta será injetado aqui -->
+            </div>
+        </section>
+
+        <!-- ======================= SEÇÃO FINAL ======================= -->
+        <section id="final" class="final-call">
+            <h2 class="reveal">Nosso Infinito Particular</h2>
+            <p class="reveal" id="final-text">Carregando...</p>
+            <button id="surprise-btn" class="cta-button reveal">Uma Surpresa Final ✨</button>
+        </section>
+
+    </main>
+
+    <!-- Lightbox para a Galeria -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-btn lightbox-close">&times;</button>
+        <button class="lightbox-btn lightbox-prev">&#10094;</button>
+        <button class="lightbox-btn lightbox-next">&#10095;</button>
+        <img src="" alt="" id="lightbox-img">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+
+    <!-- Overlay para Easter Egg -->
+    <div class="konami-overlay" id="konami-overlay"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // ===================================================================
+        //  CONFIGURAÇÃO DE CONTEÚDO
+        //  Edite todo o conteúdo do site aqui neste objeto.
+        // ===================================================================
+        const content = {
+            music: {
+                title: "Die With A Smile",
+                artist: "Canção de Andrew Watt, Bruno Mars e Lady Gaga ‧ 2024",
+                description: "Essa música nos marcou porque carrega a nossa vibe única. Nas pequenas discussões e nos dias de aprendizado, percebemos que só nos encaixamos de verdade quando Cristo é a terceira dobra do nosso amor. Cada batida nos lembra de nós, da nossa história e da beleza em crescermos juntos.",
+                // IMPORTANTE: Substitua este placeholder pelo link real do seu arquivo MP3.
+                // O ideal é hospedá-lo junto com o site (ex: /assets/media/nossa-musica.mp3)
+                audioSrc: "audio/nossa-musica.mp3" 
+            },
+            timeline: [
+                {
+                    date: "03 de Agosto, 2024",
+                    title: "O Início de Tudo",
+                    text: "Tudo começou com um comentário sobre a mulher de Provérbios no TikTok. E naquele instante, minha preciosa enviada por Deus, sem dúvidas, encontrou seu caminho até mim.",
+                },
+                {
+                    date: "03 de Agosto, 2024",
+                    title: "Primeiro oi 👀",
+                    text: "Um simples 'oi' — cara de pau — que mudou nossos mundos e começou a escrever uma nova constelação em nossas vidas."
+                },
+                {
+                    date: "27 de Agosto, 2024",
+                    title: "Pedido de namoro!",
+                    text: "Nossa primeira certeza sobre o amor que já existia desde o instante em que nossos caminhos se cruzaram pela primeira vez."
+                },
+                {
+                    date: "Hoje",
+                    title: "Construindo o Futuro",
+                    text: "Olhando para trás, vejo cada passo como uma estrela em nossa jornada. E olhando para frente, vejo um infinito de possibilidades ao seu lado."
+                }
+            ],
+            gallery: [
+                { src: "img/primeira-aventura.JPEG", caption: "Nossa primeira aventura juntos", tags: ["momentos"] },
+                { src: "img/primeira-flor.JPEG", caption: "Margaridas foram feitas para você", tags: ["momentos"] },
+                { src: "img/comentario.JPEG", caption: "Foi Deus quem nos separou para esse momento.", tags: ["momentos"] },
+                { src: "img/primeiro-oi.JPEG", caption: "Não quis perder a oportunidade de conhecer alguém que se encanta por um comentário como aquele.😻", tags: ["momentos"] },
+                { src: "img/lugar-favorito.JPEG", caption: "Perdendo a vergonha da câmera", tags: ["momentos"] },
+                { src: "img/primeiro-wpp.JPEG", caption: "Momento mais nostalgico da minha vida — errar seu nome.🤣", tags: ["momentos"] },
+                { src: "img/cabelos.JPEG", caption: "...em ti não há defeito algum, minha princesa!", tags: ["momentos"] },
+                { src: "img/aniversario.JPEG", caption: "Meu primeiro café da manhã na cama kkkk Eu te amo!", tags: ["momentos"] },
+                { src: "img/declaracao.JPEG", caption: "Que Deus me julgue se algum dia eu me afastar de você de modo que não seja pela morte.", tags: ["momentos"] },
+                { src: "img/marca-registrada.JPEG", caption: "Minha marca registrada. ahaha😅", tags: ["momentos"] },
+                { src: "img/namorados.JPEG", caption: "Feliz primeiro dia dos namorados!", tags: ["momentos"] },
+                { src: "img/olho-magico.JPEG", caption: "Para que eu te acompanhe por onde for.", tags: ["momentos"] },
+                { src: "img/primeira-camiseta.JPEG", caption: "Primeira camiseta minha que ela usa kkkk.", tags: ["momentos"] },
+                { src: "img/primeira-carta-papel.JPEG", caption: "Foi nada dificil escrevê-la.", tags: ["momentos"] },
+                { src: "img/primeiro-panetone.JPEG", caption: "Sim... Vamos comer muitos desses ainda — sozinhos.🤣", tags: ["momentos"] },
+                { src: "img/realizacao-princesa.JPEG", caption: "Me senti o homem mais realizado do mundo em poder reconhecer isso em você.", tags: ["momentos"] },
+                { src: "img/ligacao.JPEG", caption: "Que eu jamais deixe de sorrir com você...😻", tags: ["momentos"] },
+                { src: "https://placehold.co/400x600/4A00E0/ffffff?text=Momento+Bobo", caption: "Sendo nós mesmos", tags: ["momentos"] },
+                { src: "https://placehold.co/600x450/FF72E5/0D041A?text=Cachorro", caption: "Nosso anjinho de quatro patas", tags: ["familia"] },
+                { src: "https://placehold.co/600x400/C972FF/0D041A?text=Pôr+do+Sol", caption: "Colecionando pores do sol", tags: ["viagens"] },
+                { src: "https://placehold.co/400x500/72F8FF/0D041A?text=Aniversário", caption: "Celebrando a vida", tags: ["familia"] }
+            ],  
+            letter: {
+                title: "Meu Universo, Suelem",
+                paragraphs: [
+                    "Se o amor fosse uma galáxia, você seria a estrela mais brilhante, aquela que guia e ilumina todo o resto. Antes de você, eu navegava em um céu escuro, mas sua chegada foi como uma supernova de sentimentos, colorindo cada canto da minha existência.",
+                    "Com você, aprendi que o amor não é sobre encontrar alguém perfeito, mas sobre encontrar alguém que faz o nosso mundo ser perfeito. É sobre as risadas espontâneas, o conforto no silêncio, o apoio nos sonhos mais loucos. É sobre construir um universo que é só nosso.",
+                    "Obrigado por ser minha constante, minha inspiração e meu porto seguro. Cada dia ao seu lado é uma nova descoberta, uma nova estrela para adicionar à nossa constelação particular.",
+                    "Com todo o amor que existe em mim,",
+                    "Matheus"
+                ]
+            },
+            final: {
+                text: "Nossa história não tem um ponto final. É uma série de reticências, um universo em constante expansão, cheio de novas estrelas para descobrir. E eu mal posso esperar para explorar cada uma delas com você."
+            }
+        };
+
+        // ===================================================================
+        //  INICIALIZAÇÃO E LÓGICA DO SITE
+        // ===================================================================
+
+        // --- Carregamento de Conteúdo Dinâmico ---
+        function loadContent() {
+            // Música
+            document.getElementById('track-title').textContent = content.music.title;
+            document.getElementById('track-artist').textContent = content.music.artist;
+            document.getElementById('music-text').textContent = content.music.description;
+            document.getElementById('audio-player').src = content.music.audioSrc;
+
+            // Linha do Tempo
+            const timelineContainer = document.getElementById('timeline-container');
+            content.timeline.forEach((item, index) => {
+                const side = index % 2 === 0 ? 'left' : 'right';
+                const timelineItem = document.createElement('div');
+                timelineItem.className = `timeline-item ${side}`;
+                timelineItem.innerHTML = `
+                    <div class="timeline-content">
+                        <span class="date">${item.date}</span>
+                        <h3>${item.title}</h3>
+                        <p>${item.text}</p>
+                    </div>
+                `;
+                timelineContainer.appendChild(timelineItem);
+            });
+
+            // Galeria
+            const galleryGrid = document.getElementById('gallery-grid-container');
+            const filtersContainer = document.getElementById('gallery-filters-container');
+            const allTags = new Set(['todos']);
+            content.gallery.forEach(item => item.tags.forEach(tag => allTags.add(tag)));
+
+            filtersContainer.innerHTML = [...allTags].map(tag => 
+                `<button class="filter-btn ${tag === 'todos' ? 'active' : ''}" data-filter="${tag}">${tag.charAt(0).toUpperCase() + tag.slice(1)}</button>`
+            ).join('');
+
+            galleryGrid.innerHTML = content.gallery.map((item, index) => `
+                <div class="gallery-item" data-tags="${item.tags.join(' ')}" data-index="${index}">
+                    <img src="${item.src}" alt="${item.caption}" loading="lazy">
+                    <div class="overlay">Ver Foto</div>
+                </div>
+            `).join('');
+
+            // Carta
+            const letterContainer = document.getElementById('letter-container');
+            letterContainer.innerHTML = `
+                <h3>${content.letter.title}</h3>
+                ${content.letter.paragraphs.map(p => `<p>${p}</p>`).join('')}
+            `;
+            
+            // Final
+            document.getElementById('final-text').textContent = content.final.text;
+        }
+
+        loadContent();
+
+        // --- Fundo Cósmico com Canvas ---
+        const canvas = document.getElementById('cosmic-background');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        let animationFrameId;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function createStars() {
+            stars = [];
+            for (let i = 0; i < 400; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5,
+                    alpha: Math.random(),
+                    speed: Math.random() * 0.2 + 0.1
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+                ctx.fill();
+            });
+        }
+
+        function updateStars() {
+            stars.forEach(star => {
+                star.y -= star.speed;
+                if (star.y < 0) {
+                    star.y = canvas.height;
+                    star.x = Math.random() * canvas.width;
+                }
+            });
+        }
+
+        function animateCosmos() {
+            drawStars();
+            updateStars();
+            animationFrameId = requestAnimationFrame(animateCosmos);
+        }
+
+        function initCosmos() {
+            resizeCanvas();
+            createStars();
+            animateCosmos();
+        }
+        
+        window.addEventListener('resize', () => {
+            cancelAnimationFrame(animationFrameId);
+            initCosmos();
+        });
+        
+        initCosmos();
+
+        // --- Animações de Scroll (GSAP & Intersection Observer) ---
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Revelar elementos
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach(el => {
+            gsap.fromTo(el, 
+                { opacity: 0, y: 50 },
+                { 
+                    opacity: 1, y: 0, duration: 1,
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    },
+                    delay: parseFloat(el.dataset.delay) || 0
+                }
+            );
+        });
+
+        // Animações da timeline
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        timelineItems.forEach(item => {
+            const side = item.classList.contains('left') ? -50 : 50;
+            gsap.fromTo(item,
+                { opacity: 0, x: side },
+                {
+                    opacity: 1, x: 0, duration: 0.8,
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 80%',
+                    }
+                }
+            );
+        });
+
+        // Barra de progresso
+        gsap.to('.progress-bar', {
+            width: '100%',
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0.5
+            }
+        });
+
+        // --- Navegação com Scroll Spy ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 60) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // --- Player de Música Simples ---
+        const audio = document.getElementById('audio-player');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const startJourneyBtn = document.getElementById('start-journey-btn');
+
+        // Função para tocar/pausar
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        // Evento para o botão principal "Começar"
+        startJourneyBtn.addEventListener('click', () => {
+            document.getElementById('music').scrollIntoView({ behavior: 'smooth' });
+            if (audio.paused) {
+                togglePlay();
+            }
+        });
+
+        // Evento para o botão de play/pause
+        playPauseBtn.addEventListener('click', togglePlay);
+
+        // Alterar ícones conforme estado do áudio
+        audio.addEventListener('play', () => {
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+        });
+
+        audio.addEventListener('pause', () => {
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+        });
+
+
+        // --- Galeria e Lightbox ---
+        const filters = document.querySelector('.gallery-filters');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        let currentIndex = 0;
+        
+        filters.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON') return;
+            
+            document.querySelector('.filter-btn.active').classList.remove('active');
+            e.target.classList.add('active');
+            
+            const filter = e.target.dataset.filter;
+            galleryItems.forEach(item => {
+                if (filter === 'todos' || item.dataset.tags.includes(filter)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        function showLightbox(index) {
+            currentIndex = index;
+            const item = content.gallery[currentIndex];
+            lightboxImg.src = item.src;
+            lightboxCaption.textContent = item.caption;
+            lightbox.classList.add('show');
+        }
+        
+        function closeLightbox() {
+            lightbox.classList.remove('show');
+        }
+
+        function showNext() {
+            currentIndex = (currentIndex + 1) % content.gallery.length;
+            showLightbox(currentIndex);
+        }
+        
+        function showPrev() {
+            currentIndex = (currentIndex - 1 + content.gallery.length) % content.gallery.length;
+            showLightbox(currentIndex);
+        }
+
+        document.getElementById('gallery-grid-container').addEventListener('click', e => {
+            const item = e.target.closest('.gallery-item');
+            if (item) {
+                showLightbox(parseInt(item.dataset.index));
+            }
+        });
+        
+        document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+        document.querySelector('.lightbox-next').addEventListener('click', showNext);
+        document.querySelector('.lightbox-prev').addEventListener('click', showPrev);
+        lightbox.addEventListener('click', e => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        function createHeartExplosion(count = 50) {
+            const overlay = document.getElementById('konami-overlay');
+            const messages = [
+                '💖', 'Amor da minha vida!💘', '💝', 
+                'Princesa!💗', 'Eu te amo!💞', '💕', 
+                '❣️', 'Gostosura!❤️‍🔥', 'Meu coração!💓'
+            ];
+
+            for (let i = 0; i < count; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-particle';
+                heart.innerHTML = messages[Math.floor(Math.random() * messages.length)];
+            
+                // posição e estilo aleatórios
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.top = `${Math.random() * 20 + 80}vh`; // começa sempre na parte de baixo
+                heart.style.animationDelay = `${Math.random() * 3}s`;
+                heart.style.animationDuration = `${5 + Math.random() * 4}s`;
+                heart.style.fontSize = `${1.8 + Math.random() * 2.2}rem`;
+                heart.style.color = `hsl(${Math.random() * 360}, 100%, 70%)`;
+            
+                overlay.appendChild(heart);
+                setTimeout(() => heart.remove(), 9000);
+            }
+        
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        }
+
+        // Botão de surpresa
+        document.getElementById('surprise-btn').addEventListener('click', () => {
+            createHeartExplosion(80); // mais partículas para encher a tela
+            playLoveSound();
+        });
+
+        // Função de som opcional
+        function playLoveSound() {
+            const audio = new Audio('https://freesound.org/data/previews/458/458889_8386270-lq.mp3');
+            audio.volume = 0.5;
+            audio.play();
+        }
+
+        // Konami Code
+        const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+        let konamiIndex = 0;
+        document.addEventListener('keydown', e => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    createHeartExplosion(200); // explosão épica
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+
+    });
+    </script>
+</body>
+</html>
